@@ -1,0 +1,60 @@
+
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style type="text/css">
+ 
+
+  
+.subunit.GB { fill : #FF0000; }
+.subunit-boundary {
+  fill: none;
+  stroke: #777;
+  stroke-dasharray: 2,2;
+  stroke-linejoin: round;
+}
+
+
+</style>
+<body>
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://d3js.org/topojson.v1.min.js"></script>
+<script>
+
+var width = 960,
+    height = 480;
+
+var projection = d3.geo.equirectangular()
+    .scale(153)
+    .translate([width / 2, height / 2])
+    .precision(.1);
+
+var path = d3.geo.path()
+    .projection(projection);
+
+var graticule = d3.geo.graticule();
+
+var path = d3.geo.path()
+    .projection(projection);
+
+var svg = d3.select("body").append("svg")
+    .attr("width", "100%")
+    .attr("height", "100%");
+
+d3.json("world.json", function(error, world) {
+  svg.selectAll(".subunit")
+      .data(topojson.feature(world, world.objects.subunits).features)
+    .enter().append("path")
+      .attr("class", function(d) { return "subunit " + d.id; })
+      .attr("d", path);
+
+  
+  svg.append("path")
+      .datum(topojson.mesh(world, world.objects.subunits, function(a, b) { return a !== b && a.id !== "IRL"; }))
+      .attr("d", path)
+      .attr("class", "subunit-boundary");
+  
+  
+});
+</script>
+  <div></div>
+</body>
