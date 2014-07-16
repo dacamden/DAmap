@@ -43,16 +43,7 @@ height: 480px;}
   
 .Antarctica { fill : rgb(50, 50, 50); } 
 
-  .box {
-      color: #222;
-      background: #222;
-      padding: .5em;
-      text-shadow: #f5f5f5 0 1px 0;
-      border-radius: 2px;
-      box-shadow: 0px 0px 2px 0px #a6a6a6;
-      opacity: 0.9;
-      float: left;
-    }
+  
   div.tooltip {
       color: #222;
       background: #fff;
@@ -119,7 +110,7 @@ d3.json("world.json", function(error, world) {
       .attr("class", "subunit-boundary");
   
   var colour = d3.scale.linear() 
-    .domain([0, 200])
+    .domain([0, 50000])
     .range(['#ffffff', '#ff0000'])
   
   
@@ -132,7 +123,7 @@ d3.json("world.json", function(error, world) {
       .attr("title", function(d,i) { return d.name; })
       //.attr("style", return ("fill: " + colour(10000))
       .attr("d", path)
-      .attr("style", function(d) {return "fill: " + colour(d.properties.Retail)})
+      .attr("style", function(d) {return "fill: " + colour(d.properties.Whole)})
   //    .style("fill", function(d, i) { return color(d.color = d3.max(neighbors[i], function(n) { return countries[n].color; }) + 1 | 0); });
   
   var tooltip = d3.select("body").append("div")
@@ -151,7 +142,7 @@ d3.json("world.json", function(error, world) {
           .html(d.properties.name + ", " + d.properties.continent);
         infobox
           .classed("hidden", false)
-          .attr("style", "left:"+(mouse[0]+10)+"px;top:"+(mouse[1]+40)+"px")
+         // .attr("style", "left:"+(mouse[0]+10)+"px;top:"+(mouse[1]+40)+"px")
         .html(d.id + ". " + "$" + d.properties.Whole + "/kg" + ", " + "$" + d.properties.Retail + "/g") //put your Cocaine price details here to display in infobox
       })
       .on("mouseout",  function(d,i) {
@@ -186,10 +177,5 @@ d3.json("world.json", function(error, world) {
   
 });
 </script>
-  <div class="box">
-    <a href="map.dacamden.co.uk/retail">Retail</a>
-  </div>
-  <div class="box">
-    <a href="map.dacamden.co.uk/whole">Wholesale</a>
-  </div>
+  <div></div>
 </body>

@@ -43,7 +43,16 @@ height: 480px;}
   
 .Antarctica { fill : rgb(50, 50, 50); } 
 
-  
+  .box {
+      color: #222;
+      background: #222;
+      padding: .5em;
+      text-shadow: #f5f5f5 0 1px 0;
+      border-radius: 2px;
+      box-shadow: 0px 0px 2px 0px #a6a6a6;
+      opacity: 0.9;
+      float: left;
+    }
   div.tooltip {
       color: #222;
       background: #fff;
@@ -177,5 +186,10 @@ d3.json("world.json", function(error, world) {
   
 });
 </script>
-  <div></div>
+  <div class="box">
+    <a href="map.dacamden.co.uk/retail">Retail</a>
+  </div>
+  <div class="box">
+    <a href="map.dacamden.co.uk/whole">Wholesale</a>
+  </div>
 </body>

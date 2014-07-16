@@ -14,7 +14,7 @@ height: 480px;}
   stroke-dasharray: 2,2;
   stroke-linejoin: round;
 }
-/*.Asia { fill : #ffa500; } 
+.Asia { fill : #ffa500; } 
 .Asia:hover { fill: #FFFF00; }
 .Africa { fill : #602020; }
  .Africa:hover { fill: #FFFF00; } 
@@ -27,22 +27,7 @@ height: 480px;}
 .Oceania { fill : #d02121; } 
   .Oceania:hover { fill: #FFFF00; }
 .Antarctica { fill : #ffffff}
-.Antarctica:hover { fill: #FFFF00; }*/
-  
-  .Asia { fill : rgb(50, 50, 50); } 
-
-.Africa { fill : rgb(50, 50, 50); } 
- 
-.Europe { fill : rgb(50, 50, 50); } 
- 
-.North.America { fill : rgb(50, 50, 50); } 
- 
-.South.America { fill : rgb(50, 50, 50); } 
-
-.Oceania { fill : rgb(50, 50, 50); } 
-  
-.Antarctica { fill : rgb(50, 50, 50); } 
-
+.Antarctica:hover { fill: #FFFF00; }
   
   div.tooltip {
       color: #222;
@@ -53,6 +38,16 @@ height: 480px;}
       box-shadow: 0px 0px 2px 0px #a6a6a6;
       opacity: 0.9;
       position: absolute;
+    }
+  .box {
+      color: #222;
+      background: #fff;
+      padding: .5em;
+      text-shadow: #f5f5f5 0 1px 0;
+      border-radius: 2px;
+      box-shadow: 0px 0px 2px 0px #a6a6a6;
+      opacity: 0.9;
+      float: left;
     }
   div.infobox {
       color: #222;
@@ -91,8 +86,6 @@ var svg = d3.select("body").append("svg")
     .attr("width", "100%")
     .attr("height", "100%");
 
-  
-  
 d3.json("world.json", function(error, world) {
   svg.selectAll(".subunit")
       .data(topojson.feature(world, world.objects.subunits).features)
@@ -100,7 +93,6 @@ d3.json("world.json", function(error, world) {
      // .attr("class", function(d) { return d.properties.continent; })
       //.attr("id", function(t) { return t.id; } )
       //.attr("d", path);
-
       
 
   
@@ -109,11 +101,6 @@ d3.json("world.json", function(error, world) {
       .attr("d", path)
       .attr("class", "subunit-boundary");
   
-  var colour = d3.scale.linear() 
-    .domain([0, 50000])
-    .range(['#ffffff', '#ff0000'])
-  
-  
    var countries = topojson.feature(world, world.objects.subunits).features, 
        country = svg.selectAll(".country").data(countries);
   country
@@ -121,17 +108,13 @@ d3.json("world.json", function(error, world) {
       .attr("class", function(d) { return d.properties.continent; })
       .attr("id", function(t) { return t.id; } )
       .attr("title", function(d,i) { return d.name; })
-      //.attr("style", return ("fill: " + colour(10000))
       .attr("d", path)
-      .attr("style", function(d) {return "fill: " + colour(d.properties.Whole)})
   //    .style("fill", function(d, i) { return color(d.color = d3.max(neighbors[i], function(n) { return countries[n].color; }) + 1 | 0); });
   
   var tooltip = d3.select("body").append("div")
     .attr("class", "tooltip"),
    infobox = d3.select("body").append("div")
     .attr("class", "infobox");
-  
-  
 
   country
       .on("mousemove", function(d,i) {
@@ -142,8 +125,8 @@ d3.json("world.json", function(error, world) {
           .html(d.properties.name + ", " + d.properties.continent);
         infobox
           .classed("hidden", false)
-         // .attr("style", "left:"+(mouse[0]+10)+"px;top:"+(mouse[1]+40)+"px")
-        .html(d.id + ". " + "$" + d.properties.Whole + "/kg" + ", " + "$" + d.properties.Retail + "/g") //put your Cocaine price details here to display in infobox
+          .attr("style", "left:"+(mouse[0]+10)+"px;top:"+(mouse[1]+40)+"px")
+          .html(/*d.properties.name + ", " + d.properties.continent*/ d.id + ". " + "Wholesale Price, " + "Retail Price") //put your Cocaine price details here to display in infobox
       })
       .on("mouseout",  function(d,i) {
         tooltip.classed("hidden", true);
@@ -177,5 +160,10 @@ d3.json("world.json", function(error, world) {
   
 });
 </script>
-  <div></div>
+  <div class="box">
+    <a href="map.dacamden.co.uk/retail">Retail</a>
+  </div>
+  <div class="box">
+    <a href="map.dacamden.co.uk/whole">Wholesale</a>
+  </div>
 </body>
