@@ -116,7 +116,7 @@ d3.json("world.json", function(error, world) {
         infobox
           .classed("hidden", false)
           .attr("style", "left:"+(mouse[0]+10)+"px;top:"+(mouse[1]+40)+"px")
-          .html(d.properties.name + ", " + d.properties.continent) //put your Cocaine price details here to display in infobox
+          .html(/*d.properties.name + ", " + d.properties.continent*/ "Wholesale Price, " + "Retail Price") //put your Cocaine price details here to display in infobox
       })
       .on("mouseout",  function(d,i) {
         tooltip.classed("hidden", true);
