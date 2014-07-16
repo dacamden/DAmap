@@ -99,7 +99,7 @@ d3.json("world.json", function(error, world) {
         tooltip
           .classed("hidden", false)
           .attr("style", "left:"+(mouse[0]+10)+"px;top:"+(mouse[1]+40)+"px")
-          .html(d.properties.name)
+          .html(d.properties.name + ", " + d.properties.continent)
       })
       .on("mouseout",  function(d,i) {
         tooltip.classed("hidden", true)
