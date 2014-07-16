@@ -39,6 +39,17 @@ height: 480px;}
       opacity: 0.9;
       position: absolute;
     }
+  div.infobox {
+      color: #222;
+      background: #fff;
+      padding: .5em;
+      text-shadow: #f5f5f5 0 1px 0;
+      border-radius: 2px;
+      box-shadow: 0px 0px 2px 0px #a6a6a6;
+      opacity: 0.9;
+      /*position: absolute;*/
+      float: right;
+    }
 </style>
 <body>
   <script src="http://d3js.org/d3.v3.min.js"></script>
@@ -91,7 +102,9 @@ d3.json("world.json", function(error, world) {
   //    .style("fill", function(d, i) { return color(d.color = d3.max(neighbors[i], function(n) { return countries[n].color; }) + 1 | 0); });
   
   var tooltip = d3.select("body").append("div")
-    .attr("class", "tooltip");
+    .attr("class", "tooltip"),
+   infobox = d3.select("body").append("div")
+    .attr("class", "infobox");
 
   country
       .on("mousemove", function(d,i) {
@@ -99,11 +112,32 @@ d3.json("world.json", function(error, world) {
         tooltip
           .classed("hidden", false)
           .attr("style", "left:"+(mouse[0]+10)+"px;top:"+(mouse[1]+40)+"px")
-          .html(d.properties.name + ", " + d.properties.continent)
+          .html(d.properties.name + ", " + d.properties.continent);
+        infobox
+          .classed("hidden", false)
+          .attr("style", "left:"+(mouse[0]+10)+"px;top:"+(mouse[1]+40)+"px")
+          .html(d.properties.name + ", " + d.properties.continent) //put your Cocaine price details here to display in infobox
       })
       .on("mouseout",  function(d,i) {
-        tooltip.classed("hidden", true)
+        tooltip.classed("hidden", true);
+        infobox.classed("hidden", true)
       });
+  
+  /*var infobox = d3.select("body").append("div")
+    .attr("class", "infobox");
+  
+  country
+      .on("mousemove", function(r,i) {
+        var mouse = d3.mouse(svg.node()).map( function(r) { return parseInt(r); } );
+        infobox
+          .classed("hidden", false)
+          .attr("style", "left:"+(mouse[0]+10)+"px;top:"+(mouse[1]+40)+"px")
+          .html(r.properties.name + ", " + r.properties.continent)
+      })
+      .on("mouseout",  function(r,i) {
+        infobox.classed("hidden", true)
+      });*/
+  
   
   /*svg.selectAll(".subunit-label")
     .data(topojson.feature(world, world.objects.subunits).features)
