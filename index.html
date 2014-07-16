@@ -68,10 +68,10 @@ var svg = d3.select("body").append("svg")
 d3.json("world.json", function(error, world) {
   svg.selectAll(".subunit")
       .data(topojson.feature(world, world.objects.subunits).features)
-    .enter().append("path")
-      .attr("class", function(d) { return d.properties.continent; })
-      .attr("id", function(t) { return t.id; } )
-      .attr("d", path);
+    //.enter().append("path")
+     // .attr("class", function(d) { return d.properties.continent; })
+      //.attr("id", function(t) { return t.id; } )
+      //.attr("d", path);
       
 
   
@@ -85,6 +85,7 @@ d3.json("world.json", function(error, world) {
   country
   .enter().insert("path", ".graticule")
       .attr("class", function(d) { return d.properties.continent; })
+      .attr("id", function(t) { return t.id; } )
       .attr("title", function(d,i) { return d.name; })
       .attr("d", path)
   //    .style("fill", function(d, i) { return color(d.color = d3.max(neighbors[i], function(n) { return countries[n].color; }) + 1 | 0); });
