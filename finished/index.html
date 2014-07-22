@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+			#tooltip {
+				position: fixed  ;
+            left:10px;
+            top:10px;
+				width: 200px;
+				height: auto;
+				padding: 10px;
+				background-color: white;
+				-webkit-border-radius: 10px;
+				-moz-border-radius: 10px;
+				border-radius: 10px;
+				-webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+				-moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+				box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+				pointer-events: none;
+			}
+			
+			#tooltip.hidden {
+				display: none;
+			}
+			
+			#tooltip p {
+				margin: 0;
+				font-family: sans-serif;
+				font-size: 16px;
+				line-height: 20px;
+			}
+   #uibox {
+				position: fixed  ;
+            left:240px;
+            top:10px;
+				width: 200px;
+				height: auto;
+				padding: 10px;
+				background-color: white;
+				-webkit-border-radius: 10px;
+				-moz-border-radius: 10px;
+				border-radius: 10px;
+				-webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+				-moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+				box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+				
+			}
+			
+			#tooltip.hidden {
+				display: none;
+			}
+			
+			#tooltip p {
+				margin: 0;
+				font-family: sans-serif;
+				font-size: 16px;
+				line-height: 20px;
+			}
+   
+   
+   
+ </style>
+<body>
+   <script>
+function changetext(id) { 
+    console.log("hello");
+}
+</script>
+   
+   
+   <script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://d3js.org/topojson.v1.min.js"></script>
+<!-- <script src="cocainesort.js"></script> --> 
+<link rel="stylesheet" type="text/css" href="style.css"/>
+   
+   <div id="tooltip" class="hidden">
+			<p><strong>price in (g)</strong></p>
+			<p>$<span id="value">100</span></p>
+		</div>
+   
+    <div id="uibox" class="box">
+			<p><button onclick='rp(); console.log("rp")'>Retail price</button></p>
+            <p><button onclick='ws()'>Wholesale price</button></p>
+		</div>
+<script>   
+  // variables hight and width
+   var width = 960,
+    height = 1160;
+   
+   var svg = d3.select("body").append("svg")  // defines varible svg and places it in the body as an svg 
+    .attr("width", width)  // defines the windows width
+    .attr("height", height);  // defines the windows hight
+   
+ // define the projection
+var projection = d3.geo.equirectangular()
+    .scale(153)
+    .translate([width / 2, height / 2])
+    .precision(.1);
+   
+   var path = d3.geo.path()   // defines the variable path
+    .projection(projection);   // passes the predifined projection as the path projection argument
+    var price = "Retail_price";
+  var rp = function(){
+     price  = "Retail_price"
+     location.reload()
+  };
+   var ws = function(){
+     price = "Wholesale_price"
+     console.log("ws")
+     location.reload()
+  };
+  
+  d3.json("cocaineprices.json", function(rawData){     // calls coke prices and attributes it to rawData
+     var minmax = []
+     var stuff = {};  // empty object
+
+     for(i=0; i<rawData.length; i++){    //for loop
+    stuff[rawData[i]["Alpha_2"]] = (rawData[i][price]);    //fills object with relevent data from coccaine prices
+  minmax.push(rawData[i][price]);
+     }
+     
+    console.log(minmax)
+   var lowest = d3.min(minmax);
+   var highest = d3.max(minmax);
+   var middle = d3.mean(minmax);
+     console.log(middle)
+     //linear, log, pow, quantize
+   var color = d3.scale.log() 
+    .domain([lowest,middle,highest])   
+    .range([ "white" ,"pink", "red"]);
+
+     d3.json("world.json", function(error, worlddata) {   
+        svg.selectAll(".subunit")   // selects all subunits in svg
+         .data(topojson.feature(worlddata, worlddata.objects.subunits).features)  
+         .enter() 
+         .append("path")  
+        .attr("fill", function(d) { return color(stuff[d.id]); })   
+        .attr("d", path) //????
+        .on("mouseover", function(d) {
+
+          
+//Show the tooltip
+         d3.select("#tooltip").classed("hidden", false);
+d3.select("#tooltip")
+          .select("#value")
+.text(stuff[d.id]);
+             })
+             .on("mouseout", function() {
+			   
+                  //Hide the tooltip
+               d3.select("#tooltip").classed("hidden", true);
+
+             })
+        
+        
+ 
+        
+//                          -------------------------------                      
+  svg.append("path")
+      .datum(topojson.mesh(worlddata, worlddata.objects.subunits, function(a, b) { return a !== b && a.id !== "IRL"; }))
+      .attr("d", path)
+      .attr("class", "subunit-boundary");
+
+//   svg.append("path")
+//       .datum(topojson.mesh(worlddata, worlddata.objects.subunits, function(a, b) { return a === b && a.id === "IRL"; }))
+//       .attr("d", path)
+//       .attr("class", "subunit-boundary IRL");
+});
+  });
+
+</script>
+
