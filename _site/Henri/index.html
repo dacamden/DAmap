@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+#tooltip {
+        position: fixed  ;
+            left:10px;
+            top:10px;
+        width: 200px;
+        height: auto;
+        padding: 10px;
+        background-color: white;
+        -webkit-border-radius: 10px;
+        -moz-border-radius: 10px;
+        border-radius: 10px;
+        -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+        -moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+        box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+        pointer-events: none;
+}
+#tooltipnd {
+        position: fixed  ;
+            left:10px;
+            top:10px;
+        width: 200px;
+        height: auto;
+        padding: 10px;
+        background-color: white;
+        -webkit-border-radius: 10px;
+        -moz-border-radius: 10px;
+        border-radius: 10px;
+        -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+        -moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+        box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+        pointer-events: none;
+}
+      
+#tooltip.hidden {
+        display: none;
+}
+
+#tooltipnd.hidden {
+        display: none;
+}
+      
+#tooltip p {
+        margin: 0;
+        font-family: sans-serif;
+        font-size: 16px;
+        line-height: 20px;
+}
+
+#tooltipnd p {
+        margin: 0;
+        font-family: sans-serif;
+        font-size: 16px;
+        line-height: 20px;
+}
+
+path:hover {
+        opacity: 0.7;
+}
+     
+</style>
+<body>
+  
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+  <script src="http://d3js.org/topojson.v1.min.js"></script>
+   
+    <div id="tooltip" class="hidden">
+      <p><strong>Retail Cost per g</strong></p>
+      <p><span id="value">100</span></p>
+    </div>
+
+    <div id="tooltipnd" class="hidden">
+      <p><strong>No data available</strong></p>
+      <p><span id="value"></span></p>
+    </div>
+
+   
+<script> 
+
+  // variables hight and width
+   var width = 960,
+       height = 1160;
+   
+   var svg = d3.select("body").append("svg")  // defines varible svg and places it in the body as an svg 
+    .attr("width", width)  // defines the windows width
+    .attr("height", height);  // defines the windows hight
+   
+ // define the projection
+   var projection = d3.geo.mercator()   // defines the projction and it's parameters.
+    .translate([width / 2, height / 2])  // divides the width of the projection by the hight an width
+    .scale((width - 1) / 2 / Math.PI);   // ????
+   
+   var path = d3.geo.path()   // defines the variable path
+    .projection(projection);   // passes the predifined projection as the path projection argument
+   
+  
+   
+  d3.json("cocaineprices.json", function(rawData){     // calls coke prices and attributes it to rawData
+     var minmax = [];
+     var stuff = {};  // empty object
+
+     for(i=0; i<rawData.length; i++){    //for loop
+    stuff[rawData[i]["Alpha_2"]] = (rawData[i]["Wholesale_price"]);    //fills object with relevent data from coccaine prices
+    minmax.push(rawData[i]["Wholesale_price"]); }
+    
+    
+
+  var lowest = d3.min(minmax),
+      highest = d3.max(minmax),
+      mid = d3.mean(minmax);
+
+     //linear, log, pow, quantize
+     
+  var color = d3.scale.log() 
+    .domain([lowest,mid,highest])   
+    .range([ "#66CCFF" ,"#FF66FF", "red"]);
+
+d3.json("world.json", function(error, worlddata) {   
+        svg.selectAll(".subunit")   // selects all subunits in svg
+         .data(topojson.feature(worlddata, worlddata.objects.subunits).features)  
+         .enter() 
+         .append("path")  
+         .style("fill", function(d) { return (stuff[d.id]) ? color(stuff[d.id]) : "green" })
+
+         .attr("d", path) // creates the world together with append path
+         
+         .on("mouseover", function(d) {
+            if (stuff[d.id]){
+              d3.select(this)
+          //Show the tooltip
+             d3.select("#tooltip").classed("hidden", false);
+             d3.select("#tooltip")
+         .select("#value")
+         .text("$"+stuff[d.id]); 
+         } else {
+            d3.select(this)
+          //Show the tooltip
+             d3.select("#tooltipnd").classed("hidden", false); 
+
+         }  
+         })   
+         .on("mouseout", function(d) {
+         
+                  //Hide the tooltip
+               if (stuff[d.id]){
+               d3.select("#tooltip").classed("hidden", true);
+             } else { d3.select("#tooltipnd").classed("hidden",true);
+            }
+             })
+         .append("title")
+         .text(function(d) {
+            return "The retail price of cocaine in "+d.id+  " $" + stuff[d.id];
+         })    
+})
+  });
+
+</script>
